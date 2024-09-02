@@ -1,0 +1,18 @@
+#creating azure storage on kubernetes using manifestes
+
+cd "C:\Krish\DevOps Notes\AKS\02-AKS-Storage"
+
+kubectl apply -f 01-storage.yml
+kubectl apply -f 02-persistent-volume-claim.yml
+
+kubectl get all
+kubectl get sc
+kubectl get pvc
+
+# Now we are deploying all at once, storage class, persitent volume, mysql, and loadbalancer
+
+kubectl apply -f 02-AKS-Storage/
+
+kubectl apply -f 02-AKS-Storage/04-mysql-deployment.yml
+kubectl apply -f 02-AKS-Storage/05-mysql-loadbalancer-service.yml
+

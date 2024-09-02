@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deploment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:5.6
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: mydbpassword11
+          ports:
+            - containerPort: 3306
+              name: mysql
+          volumeMounts:
+            - name: mypersistent-volume
+              mountPath: /var/lib/mysql
+            - name: user-management-dbcreation-script
+              mountPath: /docker-entrypoint-initdb.d
+      volumes:
+        - name: PersistentVolumeClaim
+          PersistentVolumeClaim:
+            claimName: managed-premium-disk-pvc
+        - name: muser-management-dbcreation-script
+          configMap:
+            name: muser-management-dbcreation-script
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-loadbalancer
+spec:
+  selector:
+    app: mysql
+  ports:
+    - port: 3306
+clusterIP: None
